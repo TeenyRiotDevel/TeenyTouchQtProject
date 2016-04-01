@@ -1,0 +1,15 @@
+/Users/xcorex/Documents/Arduino/hardware/TeenyRiot/avr/libraries/TeenyKeyboard/src
+/Users/xcorex/Documents/Arduino/hardware/TeenyRiot/avr/libraries/TeenyMidi/src
+/Users/xcorex/Documents/Arduino/hardware/TeenyRiot/avr/libraries/TeenySerial/src
+/Users/xcorex/Documents/Arduino/hardware/TeenyRiot/avr/libraries/TeenyMouse/src
+/Users/xcorex/Documents/Arduino/hardware/TeenyRiot/avr/libraries/TeenyTouch
+/Users/xcorex/Documents/Arduino/hardware/TeenyRiot/avr/libraries/TeenyQTouch
+/Users/xcorex/Documents/Arduino/hardware/TeenyRiot/avr/libraries/Nokia5110LCD/src
+/Users/xcorex/Documents/Arduino/hardware/TeenyRiot/avr/libraries/EEPROM
+/Users/xcorex/Documents/Arduino/hardware/TeenyRiot/avr/libraries/SPI
+/Users/xcorex/Documents/Arduino/hardware/TeenyRiot/avr/libraries/SoftwareSerial
+/Users/xcorex/Documents/Arduino/hardware/TeenyRiot/avr/cores/teenyriot-core
+/Users/xcorex/Documents/Arduino/hardware/TeenyRiot/avr/variants/teenyriot
+~/Documents/Arduino/libraries
+src
+TeenyRiotTouch
