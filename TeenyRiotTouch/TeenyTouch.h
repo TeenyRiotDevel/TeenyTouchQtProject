@@ -34,7 +34,7 @@ Anian Bühler 01.09.2014
 	#define ADC_SETUP 0b11000100  // Set ADC pre-scaler to 16
 #endif;
 
-class QTouch
+class TeenyTouch
 {
 	private:
 		uint8_t _TouchPin,		
@@ -60,11 +60,11 @@ class QTouch
 	
 	//Konstruktoren
 	//******************************************************************
-	QTouch();
+    TeenyTouch();
 	
 	//setup
 	//******************************************************************
-	void init(uint8_t TouchPin1, uint8_t PartnerPin);
+    void begin(uint8_t TouchPin1, uint8_t PartnerPin);
 	
 	//getter
 	//******************************************************************
@@ -73,11 +73,11 @@ class QTouch
 };
 
 
-class QTouchButton
+class TeenyTouchButton
 {
 private:
 	
-	QTouch 	_QTouch;
+    TeenyTouch 	_QTouch;
 	uint8_t _hysteresis;
 	
 	int		_Offset;
@@ -88,7 +88,7 @@ private:
 public:
 	//Konstruktoren
 	//******************************************************************
-	QTouchButton(uint8_t TouchPin1, uint8_t PartnerPin);
+    TeenyTouchButton(uint8_t TouchPin1, uint8_t PartnerPin);
 	
 	//setup
 	//******************************************************************
@@ -108,11 +108,11 @@ public:
 };
 
 
-class QTouchSlider
+class TeenyTouchSlider
 {
 private:
 	
-	QTouch 	_QTouch1, _QTouch2, _QTouch3;
+    TeenyTouch 	_QTouch1, _QTouch2, _QTouch3;
 	uint8_t _hysteresis, _threshold,
 			_maxVal1, _maxVal2, _maxVal3,
 			_lastSliderPos;
@@ -125,7 +125,7 @@ private:
 public:
 	//Konstruktoren
 	//******************************************************************
-	QTouchSlider(uint8_t TouchPin1, uint8_t TouchPin2, uint8_t TouchPin3);
+    TeenyTouchSlider(uint8_t TouchPin1, uint8_t TouchPin2, uint8_t TouchPin3);
 	
 	//setup
 	//******************************************************************

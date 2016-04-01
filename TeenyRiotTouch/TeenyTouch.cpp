@@ -24,7 +24,7 @@ AB	27.05.2015
 // * indicates PWM port
 //
 
-#include "LGI_QTouch.h"
+#include "TeenyTouch.h"
 
  
 //QTouch
@@ -33,11 +33,11 @@ AB	27.05.2015
 
 //Konstruktor
 //******************************************************************
-QTouch :: QTouch(){}
+TeenyTouch :: TeenyTouch(){}
 
 //setup
 //******************************************************************
-void QTouch :: init(uint8_t TouchPin, uint8_t PartnerPin) { //Abfrage bei mehereren Objekten über ifndef _TOUCHINIT_
+void TeenyTouch :: begin(uint8_t TouchPin, uint8_t PartnerPin) { //Abfrage bei mehereren Objekten über ifndef _TOUCHINIT_
 
 
 	
@@ -49,15 +49,15 @@ void QTouch :: init(uint8_t TouchPin, uint8_t PartnerPin) { //Abfrage bei mehere
 	    // prepare the ADC unit for one-shot measurements
 		// see the atmega328 datasheet for explanations of the registers and values
 		ADMUX = ADMUX_SETUP; // Vcc as voltage reference (bits76), right adjustment (bit5), use ADC0 as input (bits3210)
-		ADCSRA = 0b11000100; // enable ADC (bit7), initialize ADC (bit6), no autotrigger (bit5), don't clear int-flag (bit4), no interrupt (bit3), clock div by 16@16Mhz=1MHz (bit210) ADC should run at 50kHz to 200kHz, 1MHz gives decreased resolution
-		ADCSRB = 0b00000000; // autotrigger source free running (bits210) doesn't apply
+        ADCSRA = 0b11000100; // enable ADC (bit7), initialize ADC (bit6), no autotrigger (bit5), don't clear int-flag (bit4), no interrupt (bit3), clock div by 16@16Mhz=1MHz (bit210) ADC should run at 50kHz to 200kHz, 1MHz gives decreased resolution
+        ADCSRB = 0b00000000; // autotrigger source free running (bits210) doesn't apply
 		while(ADCSRA & (1<<ADSC)){} // wait for first conversion to complete 
   #endif;
 }
 
 //getter
 //******************************************************************
-int QTouch :: getRawValue(uint8_t iterMeasure){
+int TeenyTouch :: getRawValue(uint8_t iterMeasure){
 	int adc1 = 0;
 	int adc2 = 0;
 	
@@ -72,7 +72,7 @@ int QTouch :: getRawValue(uint8_t iterMeasure){
 	return (adc2-adc1);
 }
 
-uint16_t QTouch :: touch_probe(uint8_t pin, uint8_t partner, bool dir) {
+uint16_t TeenyTouch :: touch_probe(uint8_t pin, uint8_t partner, bool dir) {
       uint8_t MUXPin;
 	  uint8_t MUXPartner;
 	  
@@ -122,9 +122,9 @@ uint16_t QTouch :: touch_probe(uint8_t pin, uint8_t partner, bool dir) {
 
 //Konstruktor
 //******************************************************************
-QTouchButton :: QTouchButton(uint8_t TouchPin, uint8_t PartnerPin):_QTouch(){
+TeenyTouchButton :: TeenyTouchButton(uint8_t TouchPin, uint8_t PartnerPin):_QTouch(){
 
-	this->_QTouch.init(TouchPin, PartnerPin);
+    this->_QTouch.begin(TouchPin, PartnerPin);
 
 	this-> _Offset		= 0;
 	this-> _hysteresis = 30;
@@ -134,37 +134,37 @@ QTouchButton :: QTouchButton(uint8_t TouchPin, uint8_t PartnerPin):_QTouch(){
 
 //setup
 //******************************************************************
-void QTouchButton :: init(){ //Abfrage bei mehereren Objekten über ifndef _TOUCHINIT_
+void TeenyTouchButton :: init(){ //Abfrage bei mehereren Objekten über ifndef _TOUCHINIT_
   this-> _Offset = this->_QTouch.getRawValue(10);
 }
 
 
 //setter
 //******************************************************************
-void QTouchButton :: setHysteresis(uint8_t hysteresis){
+void TeenyTouchButton :: setHysteresis(uint8_t hysteresis){
 	this-> _hysteresis = hysteresis;
 	}
 
-void QTouchButton :: setOffset(uint8_t Offset){
+void TeenyTouchButton :: setOffset(uint8_t Offset){
 	this-> _Offset = Offset;
 	}
 
 	
 //getter
 //******************************************************************
-uint8_t QTouchButton :: getHysteresis(){
+uint8_t TeenyTouchButton :: getHysteresis(){
 	return this-> _hysteresis;
 	}
 
-int QTouchButton :: getOffset(){
+int TeenyTouchButton :: getOffset(){
 	return this-> _Offset;
 	}
 
-bool QTouchButton :: isTouched(){
+bool TeenyTouchButton :: isTouched(){
 	return ((this->_QTouch.getRawValue(4) - this-> _Offset) >  this-> _hysteresis);
 }
 
-int QTouchButton :: getRawTouch(){
+int TeenyTouchButton :: getRawTouch(){
 	return this->_QTouch.getRawValue(4);
 }
 
@@ -175,11 +175,11 @@ int QTouchButton :: getRawTouch(){
 
 //Konstruktor
 //******************************************************************
-QTouchSlider :: QTouchSlider(uint8_t TouchPin1, uint8_t TouchPin2, uint8_t TouchPin3):_QTouch1(), _QTouch2(), _QTouch3(){
+TeenyTouchSlider :: TeenyTouchSlider(uint8_t TouchPin1, uint8_t TouchPin2, uint8_t TouchPin3):_QTouch1(), _QTouch2(), _QTouch3(){
 
-	this->_QTouch1.init(TouchPin1, TouchPin3);
-	this->_QTouch2.init(TouchPin2, TouchPin1);
-	this->_QTouch3.init(TouchPin3, TouchPin2);
+    this->_QTouch1.begin(TouchPin1, TouchPin3);
+    this->_QTouch2.begin(TouchPin2, TouchPin1);
+    this->_QTouch3.begin(TouchPin3, TouchPin2);
 
 	this-> _Offset1		= 0;
 	this-> _Offset2		= 0;
@@ -189,13 +189,13 @@ QTouchSlider :: QTouchSlider(uint8_t TouchPin1, uint8_t TouchPin2, uint8_t Touch
 	this-> _maxVal1     = 0;
 	this-> _maxVal2     = 0;
 	this-> _maxVal3     = 0;
-	this-> _lastSliderPos = 0;
+    this-> _lastSliderPos = 0;
 }
 
 
 //setup
 //******************************************************************
-void QTouchSlider :: init(){ //Abfrage bei mehereren Objekten über ifndef _TOUCHINIT_
+void TeenyTouchSlider :: init(){ //Abfrage bei mehereren Objekten über ifndef _TOUCHINIT_
 	this-> _Offset1		=  this->_QTouch1.getRawValue(10);
 	this-> _Offset2		=  this->_QTouch2.getRawValue(10);
 	this-> _Offset3		=  this->_QTouch3.getRawValue(10);
@@ -204,32 +204,32 @@ void QTouchSlider :: init(){ //Abfrage bei mehereren Objekten über ifndef _TOUC
 
 //setter
 //******************************************************************
-void QTouchSlider :: setHysteresis(uint8_t hysteresis){
+void TeenyTouchSlider :: setHysteresis(uint8_t hysteresis){
 	this-> _hysteresis = hysteresis;
 	}
 
-void QTouchSlider :: setOffset(uint8_t Offset1, uint8_t Offset2, uint8_t Offset3){
+void TeenyTouchSlider :: setOffset(uint8_t Offset1, uint8_t Offset2, uint8_t Offset3){
 	this-> _Offset1 = Offset1;
 	this-> _Offset2 = Offset2;
 	this-> _Offset3 = Offset3;
 	}
 	
-	void QTouchSlider :: setThreshold(uint8_t threshold){
+    void TeenyTouchSlider :: setThreshold(uint8_t threshold){
 	this-> _threshold = threshold;
 	}
 
 	
 //getter
 //******************************************************************
-uint8_t QTouchSlider :: getHysteresis(){
+uint8_t TeenyTouchSlider :: getHysteresis(){
 	return this-> _hysteresis;
 	}
 	
-uint8_t QTouchSlider :: getThreshold(){
+uint8_t TeenyTouchSlider :: getThreshold(){
 	return this-> _threshold;
 }
 
-int QTouchSlider :: getOffset(uint8_t num){
+int TeenyTouchSlider :: getOffset(uint8_t num){
 	switch(num){
 		case 1:
 			return this-> _Offset1;
@@ -245,7 +245,7 @@ int QTouchSlider :: getOffset(uint8_t num){
 
 
 
-int QTouchSlider :: getRawTouch(uint8_t field){
+int TeenyTouchSlider :: getRawTouch(uint8_t field){
 	switch(field){
 		case 1:
 			return this->_QTouch1.getRawValue(4);
@@ -259,7 +259,7 @@ int QTouchSlider :: getRawTouch(uint8_t field){
 	}
 }
 
-uint8_t QTouchSlider :: getTouchPosition(){
+uint8_t TeenyTouchSlider :: getTouchPosition(){
 	bool _mode = true;
 	
 	int raw1, raw2, raw3;

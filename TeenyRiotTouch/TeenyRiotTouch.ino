@@ -4,9 +4,10 @@
 #include <TeenySerial.h>
 
 #include "TeenyTouchDusjagr.h"
-#include "LGI_QTouch.h"
+#include "TeenyTouch.h"
 
-QTouch test;
+TeenyTouch test;
+//TeenyTouchDusjagr test2;
 // ATMEL ATTINY85
 //
 //                   +-\/-+
@@ -21,8 +22,8 @@ QTouch test;
 
 void setup()
 {
-    test.init(PB4,PB2);
-
+    test.begin(PB4,PB2);
+    //TeenyTouchDusjagr.begin();
     //TeenyTouchDusjagr.begin();
     TeenySerial.begin();
     // TeenyMouse.begin(); //start or reenumerate USB - BREAKING CHANGE from old versions that didn't require this
@@ -31,6 +32,6 @@ void setup()
 void loop()
 {
     TeenySerial.println(test.getRawValue(10));
-    //TeenySerial.println(TeenyTouchDusjagr.sense(PB4,PB2, 100));
+    //TeenySerial.println(TeenyTouchDusjagr.sense(PB4,PB2, 10));
     TeenySerial.delay(1);
 }
