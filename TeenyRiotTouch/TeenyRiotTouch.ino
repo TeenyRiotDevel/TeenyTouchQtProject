@@ -4,7 +4,7 @@
 #include <TeenySerial.h>
 
 #include "TeenyTouchDusjagr.h"
-#include "TeenyTouch.h"
+#include <TeenyTouch.h>
 
 TeenyTouch test;
 //TeenyTouchDusjagr test2;

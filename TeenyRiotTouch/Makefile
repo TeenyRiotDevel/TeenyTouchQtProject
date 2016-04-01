@@ -24,9 +24,9 @@ BOARD_TAG			= teenyriotusbtiny
 ARDUINO_PORT			= 
 
 # User Library Path
-USER_LIB_PATH   = /Users/xcorex/Documents/Arduino/hardware/teenyriot/avr/libraries
+USER_LIB_PATH   = ../libraries
 #ARDUINO_PLATFORM_LIB_PATH =
-ARDUINO_LIBS =TeenySerial
+ARDUINO_LIBS =TeenySerial TeenyTouch
 ARDUINO_QUIET = 1
 
 # Auto-detected from boards.txt
