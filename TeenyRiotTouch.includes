@@ -13,11 +13,6 @@
 ~/Documents/Arduino/libraries
 src
 TeenyRiotTouch
-libraries/TeenySerial/src/libs-device
-libraries/TeenySerial/examples/PrintSerial
-libraries/TeenySerial/examples/Echo
 libraries/TeenySerial/src
-libraries/TeenySerial/examples/CDC_LED
-libraries/TeenySerial
 libraries/TeenyTouch/src
-libraries/TeenyTouch
+libraries/TeenyMidi/src
