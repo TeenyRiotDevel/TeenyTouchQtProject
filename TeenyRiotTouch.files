@@ -76,3 +76,4 @@ libraries/TeenyMidi/src/usbdrvasm18-crc.inc
 libraries/TeenyMidi/src/usbdrvasm20.inc
 libraries/TeenyMidi/src/USBID-License.txt
 libraries/TeenyMidi/src/usbportability.h
+TeenyRiotTouch/AnalogTouch.h
