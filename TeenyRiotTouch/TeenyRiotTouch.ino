@@ -6,13 +6,15 @@
 #include <TeenySerial.h>
 #endif
 
-#include <TeenyTouch.h>
+//#include <TeenyTouch.h>
 
 #include "TeenyTouchDusjagr.h"
+#include "AnalogTouch.h"
 
-TeenyTouch test;
+MIDIMessage midimsg;
+//TeenyTouch test;
 
-  //TeenyTouchDusjagr test2;
+//TeenyTouchDusjagr test2;
 // ATMEL ATTINY85
 //
 //                   +-\/-+
@@ -25,50 +27,188 @@ TeenyTouch test;
 // * indicates PWM port
 //
 
+int i = -1023;
+int value = 0;
 int prevValue = 0;
 int velocityValue = 0;
 
+uint8_t samples = 100;
+uint8_t midi_delay = 15;
+
+uint16_t timer = 0;
+
+uint8_t note_off = 0;
+
+
+int readTouch(byte ADCChannel, int samples)
+{
+    long _value = 0;
+    for(int _counter = 0; _counter < samples; _counter ++)
+    {
+        pinMode(ADCChannel, INPUT_PULLUP);
+
+        ADMUX |=   0b11111;
+        ADCSRA |= (1<<ADSC); //start conversion
+        while(!(ADCSRA & (1<<ADIF))); //wait for conversion to finish
+        ADCSRA |= (1<<ADIF); //reset the flag
+
+        pinMode(ADCChannel, INPUT);
+        _value += analogRead(ADCChannel);
+    }
+    return _value / samples;
+}
+
+
+
+int muliplexAnalogRead (const uint8_t _pin_index)
+{
+    // set switch to output (not sure why, but must be set everytime..)
+    pinMode(PB2, OUTPUT);
+    pinMode(PB1, OUTPUT);
+    pinMode(PB0, OUTPUT);
+
+    // set multiplexer, select channel
+    digitalWrite(PB2, (_pin_index & 0x01));
+    digitalWrite(PB1, ((_pin_index>>1) & 0x01));
+    digitalWrite(PB0, ((_pin_index>>2) & 0x01));
+
+    // read value
+    return analogRead(2);
+}
+
+
+
 void setup()
 {
-  //test.begin(PB4,PB2);
-  #ifdef USE_MIDI
-    TeenyMidi.init();
-  #else
-    TeenySerial.begin();
-  #endif
-  TeenyTouchDusjagr.begin();
-}
 
 #ifdef USE_MIDI
-void sendCC(uint8_t ch, uint8_t value)
-{
-    TeenyMidi.send(MIDI_CONTROLCHANGE, ch, value);
+    TeenyMidi.init();
+#else
+    TeenySerial.begin();
+#endif
+
+    TeenyTouchDusjagr.begin();
+
 }
 
-void sendHiresMidi(uint16_t value)
-{
-    uint8_t valH = value >> 3;
-    uint8_t valL = value & 0b0111;
-    TeenyMidi.send(MIDI_CONTROLCHANGE, 1, valH);
-    TeenyMidi.send(MIDI_CONTROLCHANGE, 2, valL);
-}
-#endif
 
 void loop()
 {
-  int value = TeenyTouchDusjagr.sense(PB4,PB2, 100);
-  velocityValue = value-prevValue;
 
-  #ifdef USE_MIDI
+    //value = readTouch(2,500);
+    //value = analogTouchRead(2, 10);
+   // value = TeenyTouchDusjagr.sense(PB4,PB2, 100);
+ //   value = TeenyTouchDusjagr.touch(PB4,PB2,100);
+    value = TeenyTouchDusjagr.touchPin(PB4,samples);
+    velocityValue = value-prevValue;
 
-  sendHiresMidi(value);
-  TeenyMidi.delay(1); // give some time for sending, otherwhise the MIDI queue could fill up
 
-  #else
+//    for (uint8_t i = 0; i<100; i++)
+//    {
+//        pinMode(PB0,OUTPUT);
+//        digitalWrite(PB0, LOW);
+//        digitalWrite(PB2, HIGH);
+//        delay(1);
+//        digitalWrite(PB2, LOW);
+//        pinMode(PB0,INPUT);
+
+//        value = TeenyTouchDusjagr.sense(PB2,PB4, 100);
+//        //velocityValue = 10+(value-prevValue);
+
+//        //digitalWrite(PB2, HIGH);
+//        //digitalWrite(PB2, LOW);
+
+//        delay(7);
+
+//        sendHiresMidi(value);
+//        TeenyMidi.update();
+
+//    }
+
+//    for (uint8_t i = 0; i<100; i++)
+//    {
+//        pinMode(PB0,OUTPUT);
+//        digitalWrite(PB0, LOW);
+//        digitalWrite(PB2, LOW);
+//        delay(1);
+//        digitalWrite(PB2, LOW);
+//        pinMode(PB0,INPUT);
+
+//        value = TeenyTouchDusjagr.sense(PB2,PB4, 100);
+//        //velocityValue = 10+(value-prevValue);
+
+//        //digitalWrite(PB2, HIGH);
+//        //digitalWrite(PB2, LOW);
+
+//        delay(7);
+
+//        sendHiresMidi(value);
+//        TeenyMidi.update();
+
+//    }
+
+#ifdef USE_MIDI
+
+
+//   i++;
+//   if (i> 1023) i = -1023;
+
+
+   if (TeenyMidi.read(&midimsg)) {                                    // need to put the ampersand "&" before "message"
+
+       if (midimsg.key == 1) // touch sample
+       {
+           samples = midimsg.value;
+           //TeenyMidi.send(midimsg.command,midimsg.key,midimsg.value);
+       }
+
+
+       if (midimsg.key == 2) //touch ADCSRA
+       {
+           TeenyTouchDusjagr.setAdcSpeed(midimsg.value);
+       }
+
+       if (midimsg.key == 3) //touch delay
+       {
+           TeenyTouchDusjagr.delay = midimsg.value;
+           //TeenyMidi.send(midimsg.command,midimsg.key,midimsg.value);
+       }
+
+       if (midimsg.key == 4) //midi delay
+       {
+           TeenyTouchDusjagr.delay = midimsg.value;
+           //TeenyMidi.send(midimsg.command,midimsg.key,midimsg.value);
+       }
+
+   }
+
+    TeenyMidi.sendCCHires(value, 1);
+    TeenyMidi.delay(midi_delay); // give some time for sending, otherwhise the MIDI queue could fill up
+
+
+//    if (velocityValue > 50)
+//        {
+//            if (note_off == 1)
+//                {
+//                    TeenyMidi.send(MIDI_NOTEON,67, velocityValue/2 );
+//                    note_off = 0;
+//                }
+//        }
+//    else
+//        {
+//            if (note_off == 0)
+//                {
+//                    TeenyMidi.send(MIDI_NOTEOFF,67,127);
+//                    note_off = 1;
+//                }
+//        }
+
+    //TeenyMidi.delay(25); // give some time for sending, otherwhise the MIDI queue could fill up
+#else
     TeenySerial.println(velocityValue); //wrap your strings in F() to save ram!
     TeenySerial.delay(1);
-  #endif
+#endif
 
-  prevValue = value;
+    prevValue = value;
 
 }
