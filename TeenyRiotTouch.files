@@ -77,3 +77,14 @@ libraries/TeenyMidi/src/usbdrvasm20.inc
 libraries/TeenyMidi/src/USBID-License.txt
 libraries/TeenyMidi/src/usbportability.h
 TeenyRiotTouch/AnalogTouch.h
+TeenyRiotTouch/Makefile
+libraries/Filter/Filter.cpp
+libraries/Filter/Filter.h
+libraries/Filter/firFilter.cpp
+libraries/Filter/firFilter.h
+libraries/Filter/iirFilter.cpp
+libraries/Filter/iirFilter.h
+libraries/Filter/medianFilter.cpp
+libraries/Filter/medianFilter.h
+libraries/Filter/newFilter.cpp
+libraries/Filter/newFilter.h
