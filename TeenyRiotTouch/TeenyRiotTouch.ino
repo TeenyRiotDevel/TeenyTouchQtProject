@@ -9,7 +9,7 @@
 //#include <TeenyTouch.h>
 
 #include "TeenyTouchDusjagr.h"
-#include "AnalogTouch.h"
+//#include "AnalogTouch.h"
 
 MIDIMessage midimsg;
 //TeenyTouch test;
@@ -36,14 +36,15 @@ uint8_t samples;
 uint8_t midi_delay;
 uint8_t sense_mode;
 uint8_t send_mode;
+uint8_t multiplex_ch;
 
 uint16_t timer = 0;
 
 uint8_t note_off = 0;
 
+uint8_t multiplexer_mapping[8]  = {5,7,6,4,3,0,1,2}; //remap multiplexer pin
 
-
-int muliplexAnalogRead (const uint8_t _pin_index)
+void setAnalogMultiplexCh(const uint8_t _pin_index)
 {
     // set switch to output (not sure why, but must be set everytime..)
     pinMode(PB2, OUTPUT);
@@ -55,13 +56,24 @@ int muliplexAnalogRead (const uint8_t _pin_index)
     digitalWrite(PB1, ((_pin_index>>1) & 0x01));
     digitalWrite(PB0, ((_pin_index>>2) & 0x01));
 
+}
+
+int muliplexAnalogRead (const uint8_t _pin_index)
+{
+    setAnalogMultiplexCh(_pin_index);
+
+    // set multiplexer, select channel
+    digitalWrite(PB2, (_pin_index & 0x01));
+    digitalWrite(PB1, ((_pin_index>>1) & 0x01));
+    digitalWrite(PB0, ((_pin_index>>2) & 0x01));
+
     // read value
     return analogRead(2);
 }
 
-void delay(int * milli)
+void delay(unsigned int * us)
 {
-    TeenyMidi.delay(*milli);
+    TeenyMidi.delay_us(*us);
 }
 
 void setup()
@@ -76,14 +88,15 @@ void setup()
     TeenyTouchDusjagr.begin();
 
     TeenyTouchDusjagr.setAdcSpeed(3);
-    TeenyTouchDusjagr.setDelayCb(&delay);
+    //TeenyTouchDusjagr.setDelayCb(&delay);
 
     TeenyTouchDusjagr.delay = 35;
     midi_delay = 5;
     sense_mode = 1;
     send_mode = 0;
     samples = 100;
-
+    multiplex_ch = 0;
+    setAnalogMultiplexCh(multiplex_ch);
     pinMode(PB0, OUTPUT);
 
 }
@@ -91,6 +104,7 @@ void setup()
 
 void loop()
 {
+    setAnalogMultiplexCh(multiplex_ch);
 
     switch (sense_mode) {
     case 1:
@@ -103,7 +117,7 @@ void loop()
         value = TeenyTouchDusjagr.sense(PB4,PB3, samples);
         break;
     case 4:
-        value = analogRead(3);
+        value = analogRead(2);
         break;
     case 5:
         i++;
@@ -136,7 +150,7 @@ void loop()
 
        if (midimsg.key == 4) //midi delay
        {
-           TeenyTouchDusjagr.delay = midimsg.value;
+           midi_delay = midimsg.value;
        }
 
        if (midimsg.key == 5) //midi delay
@@ -152,6 +166,12 @@ void loop()
        if (midimsg.key == 7) //midi delay
        {
            send_mode = midimsg.value;
+       }
+
+
+       if (midimsg.key == 8) //midi delay
+       {
+           multiplex_ch = midimsg.value;
        }
 
    }
