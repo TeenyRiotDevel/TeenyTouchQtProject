@@ -32,7 +32,8 @@ TeenyTouchDusjagrClass::TeenyTouchDusjagrClass()
 
 void TeenyTouchDusjagrClass::begin()
 {
-    this->setAdcSpeed(1);
+    this->setAdcSpeed(3);
+}
 }
 
 void TeenyTouchDusjagrClass::setAdcSpeed(uint8_t mode)
@@ -40,15 +41,27 @@ void TeenyTouchDusjagrClass::setAdcSpeed(uint8_t mode)
     ADMUX = (0<<REFS1) | (0<<REFS0); //REFS0=0:VCC reference, =1:internal reference 1.1V
 
     switch (mode) {
-    case 1:
-        ADCSRA = (1<<ADEN)| (0<<ADPS2)|(1<<ADPS1)|(1<<ADPS0); //ADC enable, prescaler 8
+      case 1:
+        ADCSRA = (1<<ADEN)| (0<<ADPS2)|(0<<ADPS1)|(1<<ADPS0); //ADC enable, prescaler 2
         break;
       case 2:
-        ADCSRA = (1<<ADEN)| (1<<ADPS2)|(0<<ADPS1)|(0<<ADPS0); //ADC enable, prescaler 16
+        ADCSRA = (1<<ADEN)| (0<<ADPS2)|(1<<ADPS1)|(0<<ADPS0); //ADC enable, prescaler 4
         break;
       case 3:
-        ADCSRA = (1<<ADEN)| (1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0); //ADC enable, prescaler 128
+        ADCSRA = (1<<ADEN)| (0<<ADPS2)|(1<<ADPS1)|(1<<ADPS0); //ADC enable, prescaler 8
         break;
+      case 4:
+        ADCSRA = (1<<ADEN)| (1<<ADPS2)|(0<<ADPS1)|(0<<ADPS0); //ADC enable, prescaler 16
+        break;
+      case 5:
+        ADCSRA = (1<<ADEN)| (1<<ADPS2)|(0<<ADPS1)|(1<<ADPS0); //ADC enable, prescaler 32
+        break;
+      case 6:
+        ADCSRA = (1<<ADEN)| (1<<ADPS2)|(1<<ADPS1)|(0<<ADPS0); //ADC enable, prescaler 64
+        break;
+      case 7:
+        ADCSRA = (1<<ADEN)| (1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0); //ADC enable, prescaler 128
+      break;
     default:
         break;
     }
@@ -67,6 +80,9 @@ uint16_t TeenyTouchDusjagrClass::touchPin(uint8_t adcPin, uint8_t samples)
     if (adcPin == PB4) muxAdc = 0x02;
     if (adcPin == PB2) muxAdc = 0x01;
     if (adcPin == PB5) muxAdc = 0x00;
+
+
+    DDRB &= ~(1<<adcPin);
 
     for (i=0 ; i< samples ; i++){
         PORTB |= (1<<adcPin); // set refPin to high to charge touch capacitor
@@ -213,7 +229,7 @@ uint16_t TeenyTouchDusjagrClass::sense(byte adcPin, byte refPin, uint8_t samples
             //PORTB &= ~(1<<adcPin);
             DDRB |= (1<<adcPin) | (1<<refPin); // both output: adcPin low, S/H (ADC0) high
 
-            delayMicroseconds(QTouchDelay);
+            delayMicroseconds(this->delay);
             PORTB &= ~((1<<adcPin) | (1<<refPin)); // ... and low: Tristate
 
             DDRB &= ~((1<<adcPin) | (1<<refPin)); // set pins to Input...
@@ -233,7 +249,7 @@ uint16_t TeenyTouchDusjagrClass::sense(byte adcPin, byte refPin, uint8_t samples
             //PORTB &= ~(1<<refPin);
             DDRB |= (1<<adcPin) | (1<<refPin); // both output: adcPin high, S/H (ADC0) low
 
-            delayMicroseconds(QTouchDelay);
+            delayMicroseconds(this->delay);
             PORTB &= ~((1<<adcPin) | (1<<refPin));
 
             DDRB &= ~((1<<adcPin) | (1<<refPin));
