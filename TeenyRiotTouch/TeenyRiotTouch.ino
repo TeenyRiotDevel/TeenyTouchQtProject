@@ -157,7 +157,7 @@ void loop()
    }
 
 
-   if (send_mode == 6)
+   if (send_mode == 1)
    {
         TeenyMidi.sendCCHires(velocityValue, 1);
     }else{
