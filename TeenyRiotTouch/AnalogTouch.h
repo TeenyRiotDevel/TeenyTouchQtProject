@@ -35,6 +35,10 @@ THE SOFTWARE.
 // Include Arduino functions to read pins
 #include "Arduino.h"
 
+#define MUX_REF_VCC 0b00000000 // value to set the ADC reference to Vcc
+#define MUX_ADMUX_GND 0b00001101 // value to set the ADC reference to Vcc
+
+
 // Check if all needed reigsters are available to through a better error if not
 #if !defined(MUX0) || !defined(MUX1) || !defined(MUX2) || !defined(MUX3)
 || !defined(ADMUX) || !defined(ADCSRA) || !defined(ADSC) || !defined(ADIF)
@@ -48,16 +52,10 @@ static inline uint16_t analogTouchRead(uint8_t analogPin, uint16_t samples = 1)
     for (uint16_t i = 0; i < samples; i ++)
     {
         // Enable pullup
-        pinMode(analogPin, INPUT_PULLUP);
+        pinMode(PB2, INPUT_PULLUP);
 
-        // Set reference voltage to 0V
-#ifdef MUX4
-        // MCUs such as 32u4, 2560
-        ADMUX |= 0x1F;
-#else
         // MCUs such as 328
-        ADMUX |= 0x0F;
-#endif
+        ADMUX = MUX_REF_VCC | MUX_ADMUX_GND;
 
         // Start the conversion
         ADCSRA |= (1 << ADSC);
@@ -68,7 +66,7 @@ static inline uint16_t analogTouchRead(uint8_t analogPin, uint16_t samples = 1)
         ADCSRA |= (1 << ADIF);
 
         // Disable pullup
-        pinMode(analogPin, INPUT);
+        pinMode(PB2, INPUT);
 
         // Measure and add to average
         value += analogRead(analogPin);
