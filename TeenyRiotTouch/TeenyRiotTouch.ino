@@ -32,31 +32,12 @@ int value = 0;
 int prevValue = 0;
 int velocityValue = 0;
 
-uint8_t samples = 100;
-uint8_t midi_delay = 15;
-
+uint8_t samples;
+uint8_t midi_delay;
+uint8_t sense_mode;
 uint16_t timer = 0;
 
 uint8_t note_off = 0;
-
-
-int readTouch(byte ADCChannel, int samples)
-{
-    long _value = 0;
-    for(int _counter = 0; _counter < samples; _counter ++)
-    {
-        pinMode(ADCChannel, INPUT_PULLUP);
-
-        ADMUX |=   0b11111;
-        ADCSRA |= (1<<ADSC); //start conversion
-        while(!(ADCSRA & (1<<ADIF))); //wait for conversion to finish
-        ADCSRA |= (1<<ADIF); //reset the flag
-
-        pinMode(ADCChannel, INPUT);
-        _value += analogRead(ADCChannel);
-    }
-    return _value / samples;
-}
 
 
 
@@ -77,7 +58,6 @@ int muliplexAnalogRead (const uint8_t _pin_index)
 }
 
 
-
 void setup()
 {
 
@@ -89,6 +69,16 @@ void setup()
 
     TeenyTouchDusjagr.begin();
 
+    TeenyTouchDusjagr.setAdcSpeed(3);
+    TeenyTouchDusjagr.setDelayCb(&delay);
+
+    TeenyTouchDusjagr.delay = 35;
+    midi_delay = 5;
+    sense_mode = 1;
+    samples = 100;
+
+    pinMode(PB0, OUTPUT);
+
 }
 
 
@@ -97,9 +87,25 @@ void loop()
 
     //value = readTouch(2,500);
     //value = analogTouchRead(2, 10);
-   // value = TeenyTouchDusjagr.sense(PB4,PB2, 100);
- //   value = TeenyTouchDusjagr.touch(PB4,PB2,100);
-    value = TeenyTouchDusjagr.touchPin(PB4,samples);
+   // value = TeenyTouchDusjagr.touch(PB4,PB2,samples);
+
+    switch (sense_mode) {
+    case 1:
+        value = TeenyTouchDusjagr.sense(PB4,PB2, samples);
+        break;
+    case 2:
+        value = TeenyTouchDusjagr.touchPin(PB4,samples);
+        break;
+    case 3:
+        value = TeenyTouchDusjagr.sense(PB4,PB3, samples);
+        break;
+    case 4:
+        value = analogRead(3);
+        break;
+    default:
+        break;
+    }
+
     velocityValue = value-prevValue;
 
 
@@ -171,16 +177,28 @@ void loop()
        if (midimsg.key == 3) //touch delay
        {
            TeenyTouchDusjagr.delay = midimsg.value;
-           //TeenyMidi.send(midimsg.command,midimsg.key,midimsg.value);
        }
 
        if (midimsg.key == 4) //midi delay
        {
            TeenyTouchDusjagr.delay = midimsg.value;
-           //TeenyMidi.send(midimsg.command,midimsg.key,midimsg.value);
+       }
+
+       if (midimsg.key == 5) //midi delay
+       {
+           sense_mode = midimsg.value;
+       }
+
+       if (midimsg.key == 6) //midi delay
+       {
+           analogWrite(PB0, midimsg.value);
+          // sense_mode = midimsg.value;
        }
 
    }
+
+
+   analogWrite(PB0, (velocityValue)*2);
 
     TeenyMidi.sendCCHires(value, 1);
     TeenyMidi.delay(midi_delay); // give some time for sending, otherwhise the MIDI queue could fill up
