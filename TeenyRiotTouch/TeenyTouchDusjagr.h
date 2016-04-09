@@ -14,7 +14,7 @@ class TeenyTouchDusjagrClass
   public:
     TeenyTouchDusjagrClass();
     void begin();
-    uint16_t sense(byte ADCReadPin, byte ADCRef, uint8_t samples);
+    uint16_t sense(byte adcPin, byte refPin, uint8_t samples);
     uint16_t touch(uint8_t pin, uint8_t partner, uint8_t samples);
     uint16_t touch_probe(uint8_t pin, uint8_t partner, bool dir);
     uint16_t touchPin(uint8_t adcPin, uint8_t samples);
