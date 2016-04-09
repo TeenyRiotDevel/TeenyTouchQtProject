@@ -1,4 +1,4 @@
-#N canvas 57 195 654 390 10;
+#N canvas 207 222 933 359 10;
 #X obj 30 78 ctlout 1 1;
 #X floatatom 30 40 5 0 0 0 - - -;
 #X obj 170 95 ctlout 2 1;
@@ -10,52 +10,76 @@
 #X obj 258 79 ctlout 3 1;
 #X floatatom 258 40 5 0 0 0 - - -;
 #X text 295 38 Delay;
-#X floatatom 343 38 5 0 0 0 - - -;
+#X floatatom 342 38 5 0 0 0 - - -;
 #X obj 342 80 ctlout 4 1;
 #X text 379 39 Midi Delay;
 #X msg 136 68 4;
 #X msg 165 68 5;
 #X msg 191 68 6;
 #X msg 136 96 7;
-#X text 150 118 Prescaler 2 \, 4 \, 6 16 \, 32 \, 64 128;
 #X floatatom 111 133 5 0 0 0 - - -;
-#X text 37 201 sample 89 \, prescale 4 \, delay 89 \, midi 15 --->
+#X text 170 193 sample 89 \, prescale 4 \, delay 89 \, midi 15 --->
 AC;
-#X text 38 223 sample 85 \, prescale 4 \, delay 43 \, midi 16 --->
+#X text 171 215 sample 85 \, prescale 4 \, delay 43 \, midi 16 --->
 AC/DC;
-#X text 37 247 sample 85 \, prescale 4 \, delay 43 \, midi 16 --->
+#X text 170 239 sample 85 \, prescale 4 \, delay 43 \, midi 16 --->
 AC/DC;
-#X text 37 271 sample 85 \, prescale 3 \, delay 43 \, midi 16 --->
+#X text 170 263 sample 85 \, prescale 3 \, delay 43 \, midi 16 --->
 AC/DC;
-#X obj 518 131 ctlout 5 1;
-#X msg 475 37 1;
-#X msg 511 37 2;
-#X text 545 37 sense mode;
-#X msg 559 58 3;
-#X msg 595 66 4;
-#X obj 500 240 ctlout 6 1;
-#X floatatom 492 191 5 0 0 0 - - -;
-#X text 41 298 sample 29 \, pre 4 \, delay 8 \, midi 7 \, sense 3 \,
-;
+#X obj 701 189 ctlout 5 1;
+#X msg 496 51 1;
+#X msg 496 77 2;
+#X text 491 21 sense mode;
+#X msg 495 110 3;
+#X msg 498 148 4;
+#X obj 342 143 ctlout 6 1;
+#X floatatom 342 121 5 0 0 0 - - -;
+#X text 174 290 sample 29 \, pre 4 \, delay 8 \, midi 7 \, sense 3
+\,;
+#X text 381 121 PWM on PB0;
+#X msg 803 54 5;
+#X text 835 56 value test;
+#X text 523 50 TeenyTouchDusjagr.sense(PB4 \, PB2 \, samples) \;;
+#X text 520 79 TeenyTouchDusjagr.touchPin(PB4 \, samples) \;;
+#X text 528 110 TeenyTouchDusjagr.sense(PB4 \, PB3 \, samples) \;;
+#X text 522 149 value = analogRead(3) \;;
+#X text 150 118 Prescaler 2 \, 4 \, 8 \, 16 \, 32 \, 64 \, 128;
+#X obj 60 205 ctlout 7 1;
+#X msg 27 153 0;
+#X text 56 153 Normal value;
+#X text 54 181 velocity value;
+#X msg 26 180 1;
+#X floatatom 20 206 5 0 0 0 - - -;
+#X floatatom 662 188 5 0 0 0 - - -;
 #X connect 1 0 0 0;
 #X connect 4 0 2 0;
-#X connect 4 0 19 0;
+#X connect 4 0 18 0;
 #X connect 5 0 2 0;
-#X connect 5 0 19 0;
+#X connect 5 0 18 0;
 #X connect 6 0 2 0;
-#X connect 6 0 19 0;
+#X connect 6 0 18 0;
 #X connect 9 0 8 0;
 #X connect 11 0 12 0;
 #X connect 14 0 2 0;
-#X connect 14 0 19 0;
+#X connect 14 0 18 0;
 #X connect 15 0 2 0;
-#X connect 15 0 19 0;
+#X connect 15 0 18 0;
 #X connect 16 0 2 0;
-#X connect 16 0 19 0;
+#X connect 16 0 18 0;
 #X connect 17 0 2 0;
-#X connect 17 0 19 0;
-#X connect 25 0 24 0;
-#X connect 26 0 24 0;
-#X connect 28 0 24 0;
-#X connect 29 0 24 0;
-#X connect 31 0 30 0;
+#X connect 17 0 18 0;
+#X connect 24 0 23 0;
+#X connect 24 0 46 0;
+#X connect 25 0 23 0;
+#X connect 25 0 46 0;
+#X connect 27 0 23 0;
+#X connect 27 0 46 0;
+#X connect 28 0 23 0;
+#X connect 28 0 46 0;
+#X connect 30 0 29 0;
+#X connect 33 0 23 0;
+#X connect 33 0 46 0;
+#X connect 41 0 40 0;
+#X connect 41 0 45 0;
+#X connect 44 0 40 0;
+#X connect 44 0 45 0;
