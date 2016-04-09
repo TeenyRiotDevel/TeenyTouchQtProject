@@ -17,3 +17,4 @@ TeenyRiotTouch
 libraries/TeenySerial/src
 libraries/TeenyTouch/src
 libraries/TeenyMidi/src
+../../AVR/TeenyRiot/platform/avr/libraries/Filter
