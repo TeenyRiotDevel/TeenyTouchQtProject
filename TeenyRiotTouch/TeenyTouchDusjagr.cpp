@@ -27,6 +27,7 @@
 
 TeenyTouchDusjagrClass::TeenyTouchDusjagrClass()
 {
+    delay_cb = 0;
     delay = 1;
 }
 
@@ -34,6 +35,21 @@ void TeenyTouchDusjagrClass::begin()
 {
     this->setAdcSpeed(3);
 }
+
+
+void TeenyTouchDusjagrClass::setDelayCb(void (*cb_func)(unsigned int* text))
+{
+    this->delay_cb = cb_func;
+}
+
+void TeenyTouchDusjagrClass::delayUs(unsigned int milli)
+{
+    if (delay_cb)
+    {
+        this->delay_cb(&milli);
+    }else{
+        delayMicroseconds(milli);
+    }
 }
 
 void TeenyTouchDusjagrClass::setAdcSpeed(uint8_t mode)
@@ -219,6 +235,7 @@ uint16_t TeenyTouchDusjagrClass::sense(byte adcPin, byte refPin, uint8_t samples
     if (refPin == PB4) muxRef = 0x02;
     if (refPin == PB2) muxRef = 0x01;
     if (refPin == PB5) muxRef = 0x00;
+     //TeenyMidi.delay(this->delay);
 
     for(int _counter = 0; _counter < samples; _counter ++)
         {
@@ -230,6 +247,8 @@ uint16_t TeenyTouchDusjagrClass::sense(byte adcPin, byte refPin, uint8_t samples
             DDRB |= (1<<adcPin) | (1<<refPin); // both output: adcPin low, S/H (ADC0) high
 
             delayMicroseconds(this->delay);
+            //TeenyMidi.delay(this->delay);
+
             PORTB &= ~((1<<adcPin) | (1<<refPin)); // ... and low: Tristate
 
             DDRB &= ~((1<<adcPin) | (1<<refPin)); // set pins to Input...
@@ -248,6 +267,8 @@ uint16_t TeenyTouchDusjagrClass::sense(byte adcPin, byte refPin, uint8_t samples
             PORTB |= (1<<adcPin); // sensePad/adcPin high
             //PORTB &= ~(1<<refPin);
             DDRB |= (1<<adcPin) | (1<<refPin); // both output: adcPin high, S/H (ADC0) low
+
+           // TeenyMidi.delay(this->delay);
 
             delayMicroseconds(this->delay);
             PORTB &= ~((1<<adcPin) | (1<<refPin));

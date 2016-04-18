@@ -88,3 +88,4 @@ libraries/Filter/medianFilter.cpp
 libraries/Filter/medianFilter.h
 libraries/Filter/newFilter.cpp
 libraries/Filter/newFilter.h
+libraries/Average/Average.h

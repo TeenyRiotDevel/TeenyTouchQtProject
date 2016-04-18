@@ -28,7 +28,7 @@ CPPFLAGS        += -DARDUINO_AVR_TEENYRIOT
 # User Library Path
 USER_LIB_PATH   = ../libraries
 #ARDUINO_PLATFORM_LIB_PATH =
-ARDUINO_LIBS =TeenyMidi TeenyTouch TeenySerial Filter
+ARDUINO_LIBS =TeenyMidi TeenyTouch TeenySerial Average
 ARDUINO_QUIET = 1
 
 # Auto-detected from boards.txt

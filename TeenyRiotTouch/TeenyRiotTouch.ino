@@ -81,6 +81,8 @@ void delay(unsigned int * us)
     TeenyMidi.delay_us(*us);
 }
 
+
+
 void setup()
 {
 
@@ -123,8 +125,8 @@ void loop()
     case 3:
         setAnalogMultiplexCh(multiplex_ch);
         value = TeenyTouchDusjagr.sense(PB4,PB3, samples);
-        setAnalogMultiplexCh(multiplex_ch2);
-        value2 = TeenyTouchDusjagr.sense(PB4,PB3, samples);
+        //setAnalogMultiplexCh(multiplex_ch2);
+        //value2 = TeenyTouchDusjagr.sense(PB4,PB3, samples);
 
         break;
     case 4:
